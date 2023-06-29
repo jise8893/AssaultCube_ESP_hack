@@ -10,8 +10,8 @@
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];   // 기본 창 클래스 이름입니다.
-
-
+HWND gHwnd; // ESP 핵을 위한 그리기 핸들을 전역변수로 선언
+HANDLE pHandle;//AssaultCubePhandle
 
 
 //게임핵 내에서 사용할 전역변수
@@ -19,7 +19,11 @@ int pid = 0;
 PlayerData user;
 
 
-
+void DrawUserData()
+{
+    ShowWindow(gHwnd, SW_SHOW);
+    InvalidateRect(gHwnd, NULL, TRUE);
+}
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -39,7 +43,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     HWND tHdl = FindWindow(0, L"AssaultCube");
     DWORD pid = 0;
     GetWindowThreadProcessId(tHdl, &pid);
-    HANDLE pHandle = OpenProcess(PROCESS_VM_READ, 0, pid);
+    pHandle = OpenProcess(PROCESS_VM_READ, 0, pid);
     uintptr_t hMod = (uintptr_t)GetProcessBaseAddressByName(L"ac_client.exe");
 
 
@@ -73,16 +77,23 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_ASSAULTCUBEESPHACK));
 
     MSG msg;
-
-    // 기본 메시지 루프입니다:
-    while (GetMessage(&msg, nullptr, 0, 0))
-    {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+    while (1) {
+        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+            if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
         }
+        else
+        {
+            DrawUserData();
+        }
+        Sleep(16);
     }
+    // 기본 메시지 루프입니다:
+    
 
     return (int) msg.wParam;
 }
@@ -156,7 +167,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    {
       return FALSE;
    }
-
+   
+   gHwnd = hWnd;
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
@@ -199,24 +211,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_PAINT:
         {
+        
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
+
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
             RECT rect;
             rect.left = 10;
             rect.top = 10;
-            
+            user.GetPlayerData(pHandle); 
             SetBkMode(hdc, TRANSPARENT);
             SetTextColor(hdc, RGB(255, 0, 0));
             DrawText(hdc, L"kkuraop AssaultCube hack", -1, &rect, DT_SINGLELINE | DT_NOCLIP);
-            
+
             rect.top = 30;
             std::wstring text = L"User Hp: " + std::to_wstring(user.GetHp());
-            DrawText(hdc,text.c_str(), text.length(), &rect, DT_SINGLELINE | DT_NOCLIP);
+            DrawText(hdc, text.c_str(), text.length(), &rect, DT_SINGLELINE | DT_NOCLIP);
             rect.top = 50;
             std::wstring textb = L"User Bullet: " + std::to_wstring(user.GetBullet());
             DrawText(hdc, textb.c_str(), textb.length(), &rect, DT_SINGLELINE | DT_NOCLIP);
+
             EndPaint(hWnd, &ps);
+
+        
         }
         break;
     case WM_DESTROY:

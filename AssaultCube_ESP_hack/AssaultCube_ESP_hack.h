@@ -2,6 +2,9 @@
 
 #include "resource.h"
 HANDLE targetHdl = NULL;
+extern class PlayerData user;
+extern HWND gHwnd; // ESP 핵을 위한 그리기 핸들을 전역변수로 선언
+extern HANDLE pHandle;//AssaultCubeHandle 
 class PlayerData
 {
 	uintptr_t playerBaseAddr;
@@ -55,6 +58,7 @@ public :
         
     }
 };
+
 HMODULE GetBaseAddressByName(PROCESSENTRY32* sub)
 {
 
