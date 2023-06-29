@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33627.172
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AssaultCube_ESP_hack", "AssaultCube_ESP_hack\AssaultCube_ESP_hack.vcxproj", "{6BC58F0B-723D-4472-B043-9BF40A3CB5FD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6BC58F0B-723D-4472-B043-9BF40A3CB5FD}.Debug|x64.ActiveCfg = Debug|x64
+		{6BC58F0B-723D-4472-B043-9BF40A3CB5FD}.Debug|x64.Build.0 = Debug|x64
+		{6BC58F0B-723D-4472-B043-9BF40A3CB5FD}.Debug|x86.ActiveCfg = Debug|Win32
+		{6BC58F0B-723D-4472-B043-9BF40A3CB5FD}.Debug|x86.Build.0 = Debug|Win32
+		{6BC58F0B-723D-4472-B043-9BF40A3CB5FD}.Release|x64.ActiveCfg = Release|x64
+		{6BC58F0B-723D-4472-B043-9BF40A3CB5FD}.Release|x64.Build.0 = Release|x64
+		{6BC58F0B-723D-4472-B043-9BF40A3CB5FD}.Release|x86.ActiveCfg = Release|Win32
+		{6BC58F0B-723D-4472-B043-9BF40A3CB5FD}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4A74F75B-B1E2-45A1-AB9E-F9CED65C64E6}
+	EndGlobalSection
+EndGlobal
