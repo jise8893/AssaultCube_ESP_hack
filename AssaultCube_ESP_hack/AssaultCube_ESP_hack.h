@@ -76,7 +76,7 @@ float GetDistance()
     double xd = pow(Enemy1.GetXpos() - user.GetXpos(), 2);
     double yd = pow(Enemy1.GetYpos() - user.GetYpos(), 2);
     double zd = pow(Enemy1.GetZpos() - user.GetZpos(), 2);
-    double distance = sqrt(xd + yd + zd);
+    double distance = sqrt(pow(sqrt(xd + yd), 2) + pow(zd, 2));
     return distance;
 
 }
@@ -129,8 +129,8 @@ void SetAimHack(HDC hdc)
     DrawText(hdc, textb.c_str(), textb.length(), &rect, DT_SINGLELINE | DT_NOCLIP);
     //setAim
     {
-        WriteProcessMemory(pHandle, (LPVOID)(user.playerBaseAddr + user.xDegreeOffset), &x_angle, sizeof(x_angle), NULL);  
-        WriteProcessMemory(pHandle, (LPVOID)(user.playerBaseAddr + user.yDegreeOffset), &y_angle, sizeof(y_angle), NULL); 
+     //   WriteProcessMemory(pHandle, (LPVOID)(user.playerBaseAddr + user.xDegreeOffset), &x_angle, sizeof(x_angle), NULL);  
+     //   WriteProcessMemory(pHandle, (LPVOID)(user.playerBaseAddr + user.yDegreeOffset), &y_angle, sizeof(y_angle), NULL); 
     }
 
 }
