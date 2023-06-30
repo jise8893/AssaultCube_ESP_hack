@@ -181,10 +181,10 @@ void SetAimHack(HDC hdc)
     rect.top = 150;
     std::wstring textb = L"Enemy Y angle " + std::to_wstring(y_angle);
     DrawText(hdc, textb.c_str(), textb.length(), &rect, DT_SINGLELINE | DT_NOCLIP);
-    //setAim
+    if(GetAsyncKeyState(0x02)&0x8000)
     {
-     //   WriteProcessMemory(pHandle, (LPVOID)(user.playerBaseAddr + user.xDegreeOffset), &x_angle, sizeof(x_angle), NULL);  
-     //   WriteProcessMemory(pHandle, (LPVOID)(user.playerBaseAddr + user.yDegreeOffset), &y_angle, sizeof(y_angle), NULL); 
+        WriteProcessMemory(pHandle, (LPVOID)(user.playerBaseAddr + user.xDegreeOffset), &x_angle, sizeof(x_angle), NULL);  
+        WriteProcessMemory(pHandle, (LPVOID)(user.playerBaseAddr + user.yDegreeOffset), &y_angle, sizeof(y_angle), NULL); 
     } 
 
 }
