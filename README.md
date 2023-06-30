@@ -7,4 +7,4 @@ Aim Hack
 <br> you should delete comment to use AimHack in AssaultCube_ESP_hack.h line 131 <br>
 
 <br><Br>
-KKURAOP IS BY BLOG'S NAME
+kkuraop IS BY BLOG'S NAME
