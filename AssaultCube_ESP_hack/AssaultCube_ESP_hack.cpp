@@ -256,7 +256,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             DrawText(hdc, textd.c_str(), textd.length(), &rect, DT_SINGLELINE | DT_NOCLIP);
 
             SetAimHack(hdc);
-
+            SetWallHack(hdc);
             EndPaint(hWnd, &ps);
 
         

@@ -86,9 +86,10 @@ float Get2Dangle() {
     double angle =atan(y / x) * 180/ 3.141592653589793;
 
     if (x < 0)
-        angle = 270 + angle;
+        angle = 270 + angle;    
     else
-        angle = 90 + angle;
+        angle = 90 + angle; 
+
     return angle;
 }
 float GetYangle() {
@@ -103,6 +104,59 @@ float GetYangle() {
         valid = -1;
     return valid*atan(zd/xyd) * 180 / 3.141592653589793;
 
+}
+bool SetWallHack(HDC hdc)
+{
+    float distance;
+    float x_angle;
+    float y_angle;
+    distance = GetDistance();
+    x_angle = Get2Dangle();
+    y_angle = GetYangle();
+    HWND tHdl = NULL;
+    RECT tRect = { 0, };
+    int tWidth, tHeight;    
+    int sightX = 90;
+    int sightY = 80;
+    float pixelOfDegreeX = 0; 
+    float pixelOfDegreeY = 0;
+
+
+    tHdl = FindWindow(0, L"AssaultCube"); 
+  
+  
+    if (!GetWindowRect(tHdl, &tRect))
+    {
+        MessageBox(NULL, L"Failed Find AssaultCube", NULL, NULL);
+        return false;
+    }
+    tWidth = tRect.right - tRect.left-16;
+    tHeight = tRect.bottom - tRect.top-40;
+    
+    pixelOfDegreeX = tWidth / sightX ;
+    pixelOfDegreeY = tWidth / sightY; 
+
+
+
+    RECT drawBox;
+    drawBox = { 0, };
+    int sizex = 1000/distance;
+    int sizey = 2000 / distance;
+    int resizing = 80;
+    if ((user.xDegree + (sightX / 2)) >= x_angle && (user.xDegree - (sightX / 2)) <= x_angle)
+    {
+        drawBox.left = (tWidth / 2) - sizex - ((user.xDegree - x_angle) * pixelOfDegreeX);
+        drawBox.top = (tHeight / 2) - sizey +((user.yDegree -y_angle) * pixelOfDegreeY)  +resizing ;
+        drawBox.right = (tWidth / 2) + sizex - ((user.xDegree - x_angle) * pixelOfDegreeX);
+        drawBox.bottom = (tHeight / 2) + sizey + ((user.yDegree - y_angle) * pixelOfDegreeY) +resizing;
+    }
+
+    HBRUSH newBrush = CreateSolidBrush(RGB(255, 0, 0));
+    SelectObject(hdc, newBrush);
+    FrameRect(hdc, &drawBox, newBrush);
+    DeleteObject(newBrush);
+    
+    return true;
 }
 void SetAimHack(HDC hdc)
 {
@@ -131,7 +185,7 @@ void SetAimHack(HDC hdc)
     {
      //   WriteProcessMemory(pHandle, (LPVOID)(user.playerBaseAddr + user.xDegreeOffset), &x_angle, sizeof(x_angle), NULL);  
      //   WriteProcessMemory(pHandle, (LPVOID)(user.playerBaseAddr + user.yDegreeOffset), &y_angle, sizeof(y_angle), NULL); 
-    }
+    } 
 
 }
 void DrawUserData()
