@@ -16,3 +16,4 @@
 #include <TlHelp32.h>
 #include <Psapi.h>
 #include <string>
+#include <math.h>

@@ -3,11 +3,12 @@
 #include "resource.h"
 HANDLE targetHdl = NULL;
 extern class PlayerData user;
+extern class PlayerData Enemy1;
 extern HWND gHwnd; // ESP 핵을 위한 그리기 핸들을 전역변수로 선언
 extern HANDLE pHandle;//AssaultCubeHandle 
 class PlayerData
 {
-	uintptr_t playerBaseAddr;
+    
 
 
     int hpOffset = 0xEC;
@@ -15,16 +16,25 @@ class PlayerData
     int xPosOffset = 0x28;
     int yPosOffset = 0x2C;
     int zPosOffset = 0x30;
-    
+
     int nameOffset = 0x205;
 
     char name[20];
-	int hp=0;
+    int hp = 0;
     int bullet = 0;
-	float x=0;
-	float y=0;
-	float z=0;
-public :
+    float x = 0;
+    float y = 0;
+    float z = 0;
+
+    
+public:
+    float xDegree;
+    float yDegree;
+    int xDegreeOffset = 0x34;
+    int yDegreeOffset = 0x38;
+
+    uintptr_t playerBaseAddr; 
+
     int GetHp() {
         return hp;
     }
@@ -40,24 +50,100 @@ public :
     float GetZpos() {
         return z;
     }
-	BOOL SetPlayerDataAddr(HANDLE pHnd,uintptr_t base,int offset)
-	{
+    BOOL SetPlayerDataAddr(HANDLE pHnd, uintptr_t base, int offset)
+    {
         SIZE_T readbytes;
         return ReadProcessMemory(pHnd, (LPCVOID)(base + offset), &playerBaseAddr, sizeof(playerBaseAddr), &readbytes);
 
-	}
+    }
     void GetPlayerData(HANDLE pHnd)
     {
         SIZE_T readbytes;
         ReadProcessMemory(pHnd, (LPCVOID)(playerBaseAddr + hpOffset), &hp, sizeof(hp), &readbytes);
         ReadProcessMemory(pHnd, (LPCVOID)(playerBaseAddr + bulletNumOffset), &bullet, sizeof(bullet), &readbytes);
-        ReadProcessMemory(pHnd, (LPCVOID)(playerBaseAddr + xPosOffset ), &x, sizeof(x), &readbytes);
+        ReadProcessMemory(pHnd, (LPCVOID)(playerBaseAddr + xPosOffset), &x, sizeof(x), &readbytes);
         ReadProcessMemory(pHnd, (LPCVOID)(playerBaseAddr + yPosOffset), &y, sizeof(y), &readbytes);
         ReadProcessMemory(pHnd, (LPCVOID)(playerBaseAddr + zPosOffset), &z, sizeof(z), &readbytes);
-        
-        
+        ReadProcessMemory(pHnd, (LPCVOID)(playerBaseAddr + xDegreeOffset), &xDegree, sizeof(xDegree), &readbytes);
+        ReadProcessMemory(pHnd, (LPCVOID)(playerBaseAddr + yDegreeOffset), &yDegree, sizeof(yDegree), &readbytes);
+
+
+
     }
 };
+float GetDistance()
+{
+    double xd = pow(Enemy1.GetXpos() - user.GetXpos(), 2);
+    double yd = pow(Enemy1.GetYpos() - user.GetYpos(), 2);
+    double zd = pow(Enemy1.GetZpos() - user.GetZpos(), 2);
+    double distance = sqrt(xd + yd + zd);
+    return distance;
+
+}
+float Get2Dangle() {
+    double x = Enemy1.GetXpos() - user.GetXpos();
+    double y = Enemy1.GetYpos() - user.GetYpos();
+    double angle =atan(y / x) * 180/ 3.141592653589793;
+
+    if (x < 0)
+        angle = 270 + angle;
+    else
+        angle = 90 + angle;
+    return angle;
+}
+float GetYangle() {
+    double xd = pow(Enemy1.GetXpos() - user.GetXpos(), 2); 
+    double yd = pow(Enemy1.GetYpos() - user.GetYpos(), 2); 
+
+    double xyd = sqrt(xd + yd);
+    double zd = Enemy1.GetZpos() - user.GetZpos();
+    double valid = 1;
+
+    if (yd < 0)
+        valid = -1;
+    return valid*atan(zd/xyd) * 180 / 3.141592653589793;
+
+}
+void SetAimHack(HDC hdc)
+{
+    float distance; 
+    float x_angle; 
+    float y_angle; 
+    distance = GetDistance(); 
+    x_angle = Get2Dangle(); 
+    y_angle = GetYangle(); 
+    RECT rect;
+    rect.left = 10;
+    rect.top = 10;
+
+    rect.top = 110;
+    std::wstring text = L"Enemy distance: " + std::to_wstring(distance);
+    DrawText(hdc, text.c_str(), text.length(), &rect, DT_SINGLELINE | DT_NOCLIP);
+
+    rect.top = 130;
+    std::wstring textd = L"Enemy angle " + std::to_wstring(x_angle);
+    DrawText(hdc, textd.c_str(), textd.length(), &rect, DT_SINGLELINE | DT_NOCLIP);
+
+    rect.top = 150;
+    std::wstring textb = L"Enemy Y angle " + std::to_wstring(y_angle);
+    DrawText(hdc, textb.c_str(), textb.length(), &rect, DT_SINGLELINE | DT_NOCLIP);
+    //setAim
+    {
+        WriteProcessMemory(pHandle, (LPVOID)(user.playerBaseAddr + user.xDegreeOffset), &x_angle, sizeof(x_angle), NULL);  
+        WriteProcessMemory(pHandle, (LPVOID)(user.playerBaseAddr + user.yDegreeOffset), &y_angle, sizeof(y_angle), NULL); 
+    }
+
+}
+void DrawUserData()
+{
+    ShowWindow(gHwnd, SW_SHOW); 
+    
+    Enemy1.GetPlayerData(pHandle); 
+    user.GetPlayerData(pHandle); 
+    InvalidateRect(gHwnd, NULL, TRUE); 
+
+}
+
 
 HMODULE GetBaseAddressByName(PROCESSENTRY32* sub)
 {

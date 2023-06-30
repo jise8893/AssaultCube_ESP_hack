@@ -17,13 +17,9 @@ HANDLE pHandle;//AssaultCubePhandle
 //게임핵 내에서 사용할 전역변수
 int pid = 0;
 PlayerData user;
+PlayerData Enemy1;
 
 
-void DrawUserData()
-{
-    ShowWindow(gHwnd, SW_SHOW);
-    InvalidateRect(gHwnd, NULL, TRUE);
-}
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -43,13 +39,25 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     HWND tHdl = FindWindow(0, L"AssaultCube");
     DWORD pid = 0;
     GetWindowThreadProcessId(tHdl, &pid);
-    pHandle = OpenProcess(PROCESS_VM_READ, 0, pid);
+    pHandle = OpenProcess(PROCESS_ALL_ACCESS, 0, pid);
     uintptr_t hMod = (uintptr_t)GetProcessBaseAddressByName(L"ac_client.exe");
 
 
     if (user.SetPlayerDataAddr(pHandle, hMod, 0x0017E0A8) == FALSE)
         return 0;
+    {
+        uintptr_t enemy1address; 
+        ReadProcessMemory(pHandle, LPCVOID(hMod + 0x0018AC04), &enemy1address, sizeof(enemy1address), NULL); 
+        
 
+
+        if (Enemy1.SetPlayerDataAddr(pHandle, enemy1address, 0x4) == FALSE)
+            ;
+
+    }
+   
+
+   
 
     user.GetPlayerData(pHandle);
 
@@ -88,6 +96,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         else
         {
+            {
+                uintptr_t enemy1address;
+                ReadProcessMemory(pHandle, LPCVOID(hMod + 0x0018AC04), &enemy1address, sizeof(enemy1address), NULL);
+                if (Enemy1.SetPlayerDataAddr(pHandle, enemy1address, 0x4) == FALSE)
+                    ;
+                
+                
+            }
             DrawUserData();
         }
         Sleep(16);
@@ -214,12 +230,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-
+            
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
             RECT rect;
             rect.left = 10;
             rect.top = 10;
-            user.GetPlayerData(pHandle); 
+            
             SetBkMode(hdc, TRANSPARENT);
             SetTextColor(hdc, RGB(255, 0, 0));
             DrawText(hdc, L"kkuraop AssaultCube hack", -1, &rect, DT_SINGLELINE | DT_NOCLIP);
@@ -230,6 +246,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             rect.top = 50;
             std::wstring textb = L"User Bullet: " + std::to_wstring(user.GetBullet());
             DrawText(hdc, textb.c_str(), textb.length(), &rect, DT_SINGLELINE | DT_NOCLIP);
+
+            rect.top = 70;
+            std::wstring textc = L"User xDegree " + std::to_wstring(user.xDegree)+L" yDegree: "+ std::to_wstring(user.yDegree);
+            DrawText(hdc, textc.c_str(), textc.length(), &rect, DT_SINGLELINE | DT_NOCLIP);
+
+            rect.top = 90;
+            std::wstring textd = L"Enemy1 x pos: " + std::to_wstring(Enemy1.GetXpos()) + L" y pos: " + std::to_wstring(Enemy1.GetYpos());
+            DrawText(hdc, textd.c_str(), textd.length(), &rect, DT_SINGLELINE | DT_NOCLIP);
+
+            SetAimHack(hdc);
 
             EndPaint(hWnd, &ps);
 
