@@ -173,7 +173,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    }
    tWidth = tRect.right - tRect.left;
    tHeight = tRect.bottom - tRect.top;
-   HWND hWnd = CreateWindowEx(WS_EX_TOPMOST | WS_EX_TRANSPARENT,szWindowClass, L"kkuraop-AssaultCubeHack",
+   HWND hWnd = CreateWindowEx(WS_EX_TOPMOST | WS_EX_TRANSPARENT,szWindowClass, L"AssaultCubeHack",
        (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU)| WS_POPUP, tRect.left, tRect.top, tWidth, tHeight, NULL, NULL, hInstance, NULL);
  
    SetWindowLong(hWnd, GWL_EXSTYLE, GetWindowLong(hWnd, GWL_EXSTYLE) | WS_EX_LAYERED);  
@@ -238,7 +238,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             
             SetBkMode(hdc, TRANSPARENT);
             SetTextColor(hdc, RGB(255, 0, 0));
-            DrawText(hdc, L"kkuraop AssaultCube hack", -1, &rect, DT_SINGLELINE | DT_NOCLIP);
+            DrawText(hdc, L"AssaultCube hack", -1, &rect, DT_SINGLELINE | DT_NOCLIP);
 
             rect.top = 30;
             std::wstring text = L"User Hp: " + std::to_wstring(user.GetHp());

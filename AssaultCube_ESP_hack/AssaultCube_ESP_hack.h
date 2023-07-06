@@ -152,8 +152,10 @@ bool SetWallHack(HDC hdc)
     }
 
     HBRUSH newBrush = CreateSolidBrush(RGB(255, 0, 0));
-    SelectObject(hdc, newBrush);
+    HBRUSH defaultBrush=(HBRUSH)SelectObject(hdc, newBrush);
+    
     FrameRect(hdc, &drawBox, newBrush);
+    SelectObject(hdc, defaultBrush);
     DeleteObject(newBrush);
     
     return true;
