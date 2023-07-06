@@ -88,6 +88,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     while (1) {
         if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
+            if (WM_QUIT == msg.message)
+                break;
             if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
             {
                 TranslateMessage(&msg);
