@@ -9,4 +9,4 @@ You have to right click to use AimHack <br>
 
 <br>
 [Wall Hack]<br>it will be working properly.  <br><br>
-kkuraop IS my blog's nickname
+
